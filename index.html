@@ -2153,8 +2153,20 @@
                     
                     // 判断编号格式
                     if (num.includes('.')) {
-                        // 已经是 X.X 格式，直接使用
-                        chapterId = num;
+                        // 已经是 X.X 格式
+                        // 特殊映射：目录中的6.1-6.4对应实际的6.3-6.6
+                        const specialMapping = {
+                            '6.1': '6.3',  // SOUL.md 详解
+                            '6.2': '6.4',  // AGENTS.md 详解
+                            '6.3': '6.5',  // IDENTITY.md 详解
+                            '6.4': '6.6'   // USER.md 详解
+                        };
+                        
+                        if (specialMapping[num]) {
+                            chapterId = specialMapping[num];
+                        } else {
+                            chapterId = num;
+                        }
                     } else {
                         // 两位数格式，转换为 X.1
                         // 00 -> 0.1, 01 -> 1.1, 02 -> 2.1, etc.

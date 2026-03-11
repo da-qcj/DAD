@@ -219,7 +219,50 @@
             height: calc(100vh - var(--header-height) - var(--footer-height));
             position: fixed;
             left: 0;
-            transition: transform var(--transition-speed);
+            transition: all var(--transition-speed);
+            z-index: 100;
+        }
+        
+        .sidebar.collapsed {
+            transform: translateX(-100%);
+        }
+        
+        .sidebar-toggle {
+            position: fixed;
+            left: var(--sidebar-width);
+            top: 50%;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 48px;
+            background: var(--bg-light);
+            border: 1px solid var(--border-color);
+            border-left: none;
+            border-radius: 0 6px 6px 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-gray);
+            transition: all var(--transition-speed);
+            z-index: 101;
+        }
+        
+        .sidebar.collapsed + .sidebar-toggle {
+            left: 0;
+        }
+        
+        .sidebar-toggle:hover {
+            background: var(--primary-light);
+            color: white;
+        }
+        
+        .content-area {
+            margin-left: var(--sidebar-width);
+            transition: margin-left var(--transition-speed);
+        }
+        
+        .content-area.expanded {
+            margin-left: 0;
         }
 
         .sidebar-header {
@@ -845,6 +888,41 @@
             transform: translateY(-2px);
         }
 
+        /* 目录页样式 */
+        .toc-link {
+            display: block;
+            padding: 12px 16px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .toc-link:hover {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            transform: translateX(8px);
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
+        }
+        
+        .toc-link:hover .toc-title {
+            color: #1e40af;
+        }
+        
+        .toc-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .toc-card:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        }
+
         /* Tag pill样式 */
         .tag-pill {
             display: inline-block;
@@ -936,6 +1014,9 @@
         <div class="nav-actions">
             <button class="theme-toggle" id="themeToggle" title="切换主题">
                 <i class="fas fa-moon"></i>
+            </button>
+            <button class="theme-toggle" id="sidebarToggle" title="切换侧边栏">
+                <i class="fas fa-bars"></i>
             </button>
             <div class="search-box">
                 <i class="fas fa-search"></i>
@@ -1353,6 +1434,17 @@
             setupEventListeners();
         });
 
+        // 切换侧边栏
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const contentArea = document.querySelector('.content-area');
+            
+            if (sidebar && contentArea) {
+                sidebar.classList.toggle('collapsed');
+                contentArea.classList.toggle('expanded');
+            }
+        }
+
         // 渲染导航树
         function renderNavTree() {
             const navTree = document.getElementById('navTree');
@@ -1452,6 +1544,11 @@
                     </div>
                 `;
 
+                // 为目录页添加链接
+                if (chapterId === 'toc') {
+                    addTocLinks();
+                }
+
                 // 重新渲染Mermaid图表
                 if (typeof mermaid !== 'undefined') {
                     setTimeout(() => {
@@ -1462,6 +1559,31 @@
                 // 更新 URL
                 history.pushState(null, '', `#${chapterId}`);
             }, 100);
+        }
+
+        // 为目录页添加链接
+        function addTocLinks() {
+            // 获取所有章节标题元素
+            const contentDisplay = document.getElementById('contentDisplay');
+            
+            // 遍历所有章节
+            Object.keys(chapters).forEach(key => {
+                if (key === 'home') return;
+                
+                const section = chapters[key];
+                section.chapters.forEach(chapter => {
+                    // 查找包含章节标题的元素
+                    const elements = contentDisplay.querySelectorAll('*');
+                    elements.forEach(el => {
+                        if (el.textContent && el.textContent.trim() === chapter.title) {
+                            // 添加点击事件和悬浮样式
+                            el.style.cursor = 'pointer';
+                            el.classList.add('toc-link');
+                            el.onclick = () => loadContent(chapter.id, key);
+                        }
+                    });
+                });
+            });
         }
 
         // 获取首页内容
@@ -1543,6 +1665,10 @@
                 html.setAttribute('data-theme', isDark ? 'light' : 'dark');
                 this.innerHTML = isDark ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
             });
+
+            // 侧边栏切换
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            sidebarToggle.addEventListener('click', toggleSidebar);
 
             // 搜索功能
             const searchInput = document.getElementById('searchInput');

@@ -1570,6 +1570,16 @@
             }
         }
 
+        // 格式化章节标题 - 将"第X章"加粗
+        function formatChapterTitle(title) {
+            // 匹配"第X章"，其中X可以是数字或中文数字
+            const match = title.match(/^(第[一二三四五六七八九十百零0-9]+章)/);
+            if (match) {
+                return '<strong>' + match[1] + '</strong>' + title.substring(match[1].length);
+            }
+            return title;
+        }
+
         // 渲染导航树
         function renderNavTree() {
             const navTree = document.getElementById('navTree');
@@ -1609,7 +1619,7 @@
                             ${section.chapters.map(chapter => `
                                 <div class="nav-chapter ${currentChapter === chapter.id ? 'active' : ''}"
                                      onclick="loadContent('${chapter.id}', '${key}')">
-                                    ${chapter.title}
+                                    ${formatChapterTitle(chapter.title)}
                                 </div>
                             `).join('')}
                         </div>

@@ -1,0 +1,23 @@
+# Python脚本
+*.py
+
+# 备份文件
+*.backup
+*.broken
+*.bak
+
+# 临时文件
+*.tmp
+*.swp
+.DS_Store
+
+# IDE文件
+.vscode/
+.idea/
+*.iml
+
+# Node modules
+node_modules/
+
+# 日志文件
+*.log

@@ -1338,6 +1338,199 @@
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
         }
+
+        /* 随笔结语页面样式 */
+        .epilogue-section {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 0;
+        }
+
+        .epilogue-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .epilogue-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            margin: 0 auto 24px;
+            box-shadow: 0 8px 16px rgba(139, 92, 246, 0.3);
+        }
+
+        .epilogue-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+
+        .epilogue-subtitle {
+            font-size: 1.2rem;
+            color: #8b5cf6;
+            font-weight: 500;
+        }
+
+        .epilogue-block {
+            margin-bottom: 40px;
+        }
+
+        .epilogue-paragraph {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .epilogue-paragraph p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #334155;
+            margin-bottom: 20px;
+        }
+
+        .epilogue-paragraph p:last-child {
+            margin-bottom: 0;
+        }
+
+        .epilogue-opening {
+            font-size: 1.3rem !important;
+            font-weight: 600;
+            color: #1e293b !important;
+        }
+
+        .epilogue-emphasis {
+            font-size: 1.3rem !important;
+            font-weight: 600;
+            color: #6d28d9 !important;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .epilogue-warning {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            padding: 16px 20px;
+            border-radius: 12px;
+            border-left: 4px solid #f59e0b;
+            font-weight: 500;
+        }
+
+        .epilogue-quote {
+            font-size: 1.5rem !important;
+            font-weight: 700;
+            color: #6d28d9 !important;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .epilogue-action {
+            margin-top: 16px;
+            font-size: 1.05rem;
+        }
+
+        .highlight {
+            background: linear-gradient(to bottom, transparent 60%, #bfdbfe 60%);
+            padding: 0 4px;
+            font-weight: 600;
+        }
+
+        .insight-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin: 20px 0;
+        }
+
+        .insight-box ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .insight-box li {
+            padding: 8px 0;
+            padding-left: 28px;
+            position: relative;
+            font-weight: 500;
+            color: #1e40af;
+        }
+
+        .insight-box li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #3b82f6;
+            font-weight: bold;
+        }
+
+        .epilogue-list {
+            list-style: none;
+            padding: 0;
+            margin: 16px 0;
+        }
+
+        .epilogue-list li {
+            padding: 8px 0 8px 32px;
+            position: relative;
+            color: #475569;
+        }
+
+        .epilogue-list li::before {
+            content: "•";
+            position: absolute;
+            left: 12px;
+            color: #8b5cf6;
+            font-size: 1.2rem;
+        }
+
+        .epilogue-divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--border-color), transparent);
+            margin: 40px 0;
+        }
+
+        .highlight-block {
+            text-align: center;
+        }
+
+        .highlight-block .epilogue-paragraph {
+            background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+            border: 2px solid #c4b5fd;
+        }
+
+        .info-banner {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .info-banner i {
+            font-size: 1.5rem;
+            color: #3b82f6;
+            flex-shrink: 0;
+            margin-top: 4px;
+        }
+
+        .info-banner p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: #1e40af;
+            margin-bottom: 12px;
+        }
+
+        .info-banner p:last-child {
+            margin-bottom: 0;
+        }
     </style>
 </head>
 <body>
@@ -1852,6 +2045,15 @@
                 `;
             });
 
+            // 随笔结语
+            html += `
+                <div class="nav-section">
+                    <div class="nav-chapter ${currentChapter === 'epilogue' ? 'active' : ''}" onclick="loadContent('epilogue')">
+                        <i class="fas fa-feather-alt"></i> 随笔结语
+                    </div>
+                </div>
+            `;
+
             navTree.innerHTML = html;
         }
 
@@ -1885,9 +2087,9 @@
                 } else if (chapterId === 'intro') {
                     content = getIntroContent();
                     title = '开场引入';
-                } else if (chapterId === 'toc') {
-                    content = tocContent;
-                    title = '目录';
+                } else if (chapterId === 'epilogue') {
+                    content = getEpilogueContent();
+                    title = '随笔结语';
                 } else {
                     for (const key of Object.keys(chapters)) {
                         if (key === 'home') continue;
@@ -2010,8 +2212,8 @@
         
         // 生成上一页/下一页导航HTML
         function getNavigationHtml(currentChapterId, currentSectionKey) {
-            // 首页、开场引入和目录页不显示导航
-            if (currentChapterId === 'home' || currentChapterId === 'intro' || currentChapterId === 'toc') {
+            // 首页、开场引入、目录页和随笔结语不显示导航
+            if (currentChapterId === 'home' || currentChapterId === 'intro' || currentChapterId === 'toc' || currentChapterId === 'epilogue') {
                 return '';
             }
             
@@ -2224,6 +2426,100 @@
             `;
         }
 
+        // 获取随笔结语内容
+        function getEpilogueContent() {
+            return `
+                <div class="epilogue-section">
+                    <!-- 标题区域 -->
+                    <div class="epilogue-header">
+                        <div class="epilogue-icon">
+                            <i class="fas fa-feather-alt"></i>
+                        </div>
+                        <h1 class="epilogue-title">折腾 OpenClaw 随笔</h1>
+                        <p class="epilogue-subtitle">一人一公司终将到来</p>
+                    </div>
+
+                    <!-- 第一段：AI民主化 -->
+                    <div class="epilogue-block">
+                        <div class="epilogue-paragraph">
+                            <p>
+                                当 AI 工具民主化之后，<span class="highlight">「品味」</span>成了唯一的差异化。
+                            </p>
+                            <p>
+                                当所有人都有了<span class="highlight">「天才军队」</span>，你和别人的差距不是「你的 AI 更强」，差距回到最原始的地方：
+                            </p>
+                            <div class="insight-box">
+                                <ul>
+                                    <li>你是谁</li>
+                                    <li>你理解什么</li>
+                                    <li>你选择做什么</li>
+                                </ul>
+                            </div>
+                            <p class="epilogue-emphasis">
+                                一人一公司终将到来…
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 分隔 -->
+                    <div class="epilogue-divider"></div>
+
+                    <!-- 第二段：阵痛期 -->
+                    <div class="epilogue-block">
+                        <div class="epilogue-paragraph">
+                            <p class="epilogue-opening">
+                                阵痛期，你会迷路。
+                            </p>
+                            <p>
+                                仔细想想，<span class="highlight">「做不到」</span>其实一直在暗中保护我们。
+                            </p>
+                            <ul class="epilogue-list">
+                                <li>你不会编程，所以不会纠结要不要做一个 App</li>
+                                <li>你不懂设计，所以不会在「做产品还是做内容」之间反复横跳</li>
+                            </ul>
+                            <p>
+                                能力的边界就是选择的边界，它帮你把无限可能性收窄到一个可操作的范围。
+                            </p>
+                            <p class="epilogue-warning">
+                                而 AI 拆掉了这层保护，把人抛进无限可能性的旷野中裸奔。
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 分隔 -->
+                    <div class="epilogue-divider"></div>
+
+                    <!-- 第三段：诅咒 -->
+                    <div class="epilogue-block highlight-block">
+                        <div class="epilogue-paragraph">
+                            <p class="epilogue-quote">
+                                「什么都能做」本身就是一种诅咒。
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 分隔 -->
+                    <div class="epilogue-divider"></div>
+
+                    <!-- 第四段：行动 -->
+                    <div class="epilogue-block">
+                        <div class="info-banner">
+                            <i class="fas fa-info-circle"></i>
+                            <div>
+                                <p>
+                                    你手里已经有了一把越来越锋利的刀，你打算砍哪棵树？
+                                </p>
+                                <p class="epilogue-action">
+                                    手握利刃，不问值不值得，先砍向你认定的那棵树。<br>
+                                    错了就换，<strong>行动胜过一切空想</strong>。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
         // 更新面包屑
         function updateBreadcrumb(chapterId, sectionKey) {
             const breadcrumb = document.getElementById('breadcrumb');
@@ -2237,7 +2533,9 @@
                 html += ` <i class="fas fa-chevron-right"></i> ${chapters[sectionKey].title}`;
             }
 
-            if (chapterId !== 'home' && chapterId !== 'toc' && chapterId !== 'intro') {
+            if (chapterId === 'epilogue') {
+                html += ' <i class="fas fa-chevron-right"></i> 随笔结语';
+            } else if (chapterId !== 'home' && chapterId !== 'toc' && chapterId !== 'intro') {
                 let chapterTitle = '';
                 for (const key of Object.keys(chapters)) {
                     if (key === 'home') continue;

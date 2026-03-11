@@ -1657,6 +1657,13 @@
                     }, 50);
                 }
 
+                // 滚动到页面顶部
+                const contentArea = document.querySelector('.content');
+                if (contentArea) {
+                    contentArea.scrollTop = 0;
+                }
+                window.scrollTo(0, 0);
+
                 // 更新 URL
                 history.pushState(null, '', `#${chapterId}`);
             }, 100);

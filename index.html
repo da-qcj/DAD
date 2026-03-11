@@ -999,6 +999,102 @@
             background: white;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .layer-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        /* 章节导航样式 */
+        .chapter-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 2px solid var(--border-color);
+            gap: 20px;
+        }
+
+        .nav-prev, .nav-next {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 20px 24px;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+            flex: 1;
+            max-width: 45%;
+        }
+
+        .nav-prev {
+            text-align: left;
+        }
+
+        .nav-next {
+            text-align: right;
+            justify-content: flex-end;
+        }
+
+        .nav-prev:hover, .nav-next:hover {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border-color: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        }
+
+        .nav-prev i, .nav-next i {
+            font-size: 1.5rem;
+            color: var(--primary-light);
+            transition: transform 0.3s ease;
+        }
+
+        .nav-prev:hover i {
+            transform: translateX(-5px);
+        }
+
+        .nav-next:hover i {
+            transform: translateX(5px);
+        }
+
+        .nav-prev span, .nav-next span {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .nav-prev small, .nav-next small {
+            font-size: 0.75rem;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .nav-prev strong, .nav-next strong {
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            line-height: 1.4;
+        }
+
+        .nav-prev:hover strong, .nav-next:hover strong {
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .chapter-navigation {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .nav-prev, .nav-next {
+                max-width: 100%;
+            }
         }
     </style>
 </head>
@@ -1546,6 +1642,7 @@
                 contentDisplay.innerHTML = `
                     <div class="fade-in">
                         ${content}
+                        ${getNavigationHtml(chapterId, sectionKey)}
                     </div>
                 `;
 
@@ -1623,6 +1720,72 @@
                     }
                 }
             });
+        }
+        
+        // 获取所有章节的有序列表
+        function getAllChapters() {
+            const allChapters = [];
+            ['part1', 'part2', 'part3'].forEach(partKey => {
+                if (chapters[partKey]) {
+                    chapters[partKey].chapters.forEach(chapter => {
+                        allChapters.push({
+                            id: chapter.id,
+                            title: chapter.title,
+                            section: partKey
+                        });
+                    });
+                }
+            });
+            return allChapters;
+        }
+        
+        // 生成上一页/下一页导航HTML
+        function getNavigationHtml(currentChapterId, currentSectionKey) {
+            // 首页和目录页不显示导航
+            if (currentChapterId === 'home' || currentChapterId === 'toc') {
+                return '';
+            }
+            
+            const allChapters = getAllChapters();
+            const currentIndex = allChapters.findIndex(c => c.id === currentChapterId);
+            
+            if (currentIndex === -1) {
+                return '';
+            }
+            
+            const prevChapter = currentIndex > 0 ? allChapters[currentIndex - 1] : null;
+            const nextChapter = currentIndex < allChapters.length - 1 ? allChapters[currentIndex + 1] : null;
+            
+            let html = '<div class="chapter-navigation">';
+            
+            // 上一页
+            if (prevChapter) {
+                html += `
+                    <a href="#${prevChapter.id}" class="nav-prev" onclick="event.preventDefault(); loadContent('${prevChapter.id}', '${prevChapter.section}');">
+                        <i class="fas fa-chevron-left"></i>
+                        <span>
+                            <small>上一页</small>
+                            <strong>${prevChapter.title}</strong>
+                        </span>
+                    </a>
+                `;
+            }
+            
+            // 下一页
+            if (nextChapter) {
+                html += `
+                    <a href="#${nextChapter.id}" class="nav-next" onclick="event.preventDefault(); loadContent('${nextChapter.id}', '${nextChapter.section}');">
+                        <span>
+                            <small>下一页</small>
+                            <strong>${nextChapter.title}</strong>
+                        </span>
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                `;
+            }
+            
+            html += '</div>';
+            return html;
         }
 
         // 获取首页内容

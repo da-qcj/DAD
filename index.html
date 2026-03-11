@@ -369,6 +369,11 @@
             padding: 40px 60px;
             background: var(--bg-color);
             min-width: 0;
+            transition: margin-left var(--transition-speed);
+        }
+        
+        .content.expanded {
+            margin-left: 0;
         }
 
         .breadcrumb {
@@ -1437,7 +1442,7 @@
         // 切换侧边栏
         function toggleSidebar() {
             const sidebar = document.querySelector('.sidebar');
-            const contentArea = document.querySelector('.content-area');
+            const contentArea = document.querySelector('.content');
             
             if (sidebar && contentArea) {
                 sidebar.classList.toggle('collapsed');

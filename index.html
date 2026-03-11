@@ -1570,20 +1570,19 @@
         function addTocLinks() {
             const contentDisplay = document.getElementById('contentDisplay');
             
-            // 章节编号到ID的映射（00 -> 0.1, 01 -> 1.1, etc.）
+            // 章节编号到ID的映射（按顺序编号）
             const numberToId = {};
-            Object.keys(chapters).forEach(key => {
-                if (key === 'home') return;
-                const section = chapters[key];
-                section.chapters.forEach(chapter => {
-                    // 将章节ID转换为编号（例如 0.1 -> 00, 1.1 -> 01）
-                    const parts = chapter.id.split('.');
-                    if (parts.length === 2) {
-                        const num = parseInt(parts[0]) * 10 + parseInt(parts[1]);
-                        const displayNum = num.toString().padStart(2, '0');
-                        numberToId[displayNum] = { id: chapter.id, section: key };
-                    }
-                });
+            let counter = 0;
+            
+            // 按顺序遍历所有章节
+            ['part1', 'part2', 'part3'].forEach(partKey => {
+                if (chapters[partKey]) {
+                    chapters[partKey].chapters.forEach(chapter => {
+                        const displayNum = counter.toString().padStart(2, '0');
+                        numberToId[displayNum] = { id: chapter.id, section: partKey };
+                        counter++;
+                    });
+                }
             });
             
             // 查找所有目录项（包含chapter-number的div）

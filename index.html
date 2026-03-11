@@ -1570,21 +1570,6 @@
         function addTocLinks() {
             const contentDisplay = document.getElementById('contentDisplay');
             
-            // 章节编号到ID的映射（按顺序编号）
-            const numberToId = {};
-            let counter = 0;
-            
-            // 按顺序遍历所有章节
-            ['part1', 'part2', 'part3'].forEach(partKey => {
-                if (chapters[partKey]) {
-                    chapters[partKey].chapters.forEach(chapter => {
-                        const displayNum = counter.toString().padStart(2, '0');
-                        numberToId[displayNum] = { id: chapter.id, section: partKey };
-                        counter++;
-                    });
-                }
-            });
-            
             // 查找所有目录项（包含chapter-number的div）
             const tocItems = contentDisplay.querySelectorAll('.flex.items-baseline.group');
             
@@ -1592,12 +1577,34 @@
                 const numberEl = item.querySelector('.chapter-number');
                 if (numberEl) {
                     const num = numberEl.textContent.trim();
-                    const chapterInfo = numberToId[num];
+                    let chapterId = null;
+                    let sectionKey = null;
                     
-                    if (chapterInfo) {
+                    // 判断编号格式
+                    if (num.includes('.')) {
+                        // 已经是 X.X 格式，直接使用
+                        chapterId = num;
+                    } else {
+                        // 两位数格式，转换为 X.1
+                        // 00 -> 0.1, 01 -> 1.1, 02 -> 2.1, etc.
+                        const chapterNum = parseInt(num);
+                        chapterId = chapterNum + '.1';
+                    }
+                    
+                    // 查找对应的section
+                    ['part1', 'part2', 'part3'].forEach(partKey => {
+                        if (chapters[partKey]) {
+                            const chapter = chapters[partKey].chapters.find(c => c.id === chapterId);
+                            if (chapter) {
+                                sectionKey = partKey;
+                            }
+                        }
+                    });
+                    
+                    if (chapterId && sectionKey) {
                         // 添加点击事件
                         item.style.cursor = 'pointer';
-                        item.onclick = () => loadContent(chapterInfo.id, chapterInfo.section);
+                        item.onclick = () => loadContent(chapterId, sectionKey);
                         
                         // 添加悬浮效果
                         item.addEventListener('mouseenter', function() {
